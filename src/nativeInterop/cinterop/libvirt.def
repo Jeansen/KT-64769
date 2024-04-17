@@ -1,4 +1,0 @@
-headers = libvirt/libvirt.h
-
-compilerOpts = -I/usr/include -I/usr/include/x86_64-linux-gnu
-linkerOpts = -l/lib/x86_64-linux-gnu/libvirt.so

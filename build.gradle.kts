@@ -22,19 +22,26 @@ kotlin {
     nativeTarget.apply {
         compilations.getByName("main") {
             cinterops {
-                val libvirt by creating
+                val libuuid by creating
             }
         }
         binaries {
-            executable {
+            executable(listOf(RELEASE)) {
                 entryPoint = "main"
+                linkerOpts("--as-needed")
+                freeCompilerArgs += "-Xoverride-konan-properties=linkerGccFlags.linux_x64=-lgcc -lgcc_eh -lc"
+                freeCompilerArgs += listOf("-linker-option", "--allow-shlib-undefined")
+                runTask?.run {
+                    val args = providers.gradleProperty("runArgs")
+                    argumentProviders.add(CommandLineArgumentProvider {
+                        args.orNull?.split(' ') ?: emptyList()
+                    })
+                }
             }
         }
     }
-    sourceSets {
-        val nativeMain by getting
-        val nativeTest by getting
-    }
+
+    sourceSets.create("main")
 
     sourceSets.all {
         languageSettings.apply {
